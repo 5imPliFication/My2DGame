@@ -9,6 +9,7 @@ public class KeyHandler implements KeyListener {
 
     public boolean up, down, left, right, interact;
     boolean enableDebug = false;
+    boolean isInteract = false;
 
     public KeyHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -86,6 +87,7 @@ public class KeyHandler implements KeyListener {
             }
         }
 
+
         //play state
         if (gamePanel.gameState == gamePanel.playState) {
             if (code == KeyEvent.VK_W) {
@@ -102,6 +104,7 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_ESCAPE) {
                 gamePanel.gameState = gamePanel.pauseState;
+                gamePanel.stopMusic();
             }
             if (code == KeyEvent.VK_F) {
                 interact = true;
@@ -117,6 +120,7 @@ public class KeyHandler implements KeyListener {
         else if (gamePanel.gameState == gamePanel.pauseState) {
             if (code == KeyEvent.VK_ESCAPE) {
                 gamePanel.gameState = gamePanel.playState;
+                gamePanel.playMusic(0);
             }
         }
         //dialogue state

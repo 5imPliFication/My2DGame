@@ -1,12 +1,17 @@
 package main;
 
+import entity.Entity;
+import object.ObjectHeart;
+
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class UI {
     GamePanel gamePanel;
     Font quinqueFive;
+    BufferedImage heart_full, heart_half, heart_blank;
     Graphics2D g2d;
     private int messageCounter = 0;
     public boolean messageOn = false;
@@ -26,6 +31,12 @@ public class UI {
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
+
+        //create hub
+        Entity heart = new ObjectHeart(gamePanel);
+        heart_full = heart.image1;
+        heart_half = heart.image2;
+        heart_blank = heart.image3;
     }
 
     public void ShowMessage(String text) {
@@ -44,16 +55,45 @@ public class UI {
         }
         //play state
         if (gamePanel.gameState == gamePanel.playState) {
-
+            playerLife();
         }
         //pause state
         if (gamePanel.gameState == gamePanel.pauseState) {
+            playerLife();
             pauseScreen();
         }
         //dialogue state
         if (gamePanel.gameState == gamePanel.dialogueState) {
             dialogueScreen();
         }
+    }
+
+    private void playerLife() {
+        int x = gamePanel.tileSize / 2;
+        int y = gamePanel.tileSize / 2;
+        int i = 0;
+        //draw empty heart
+        while (i < gamePanel.player.maxLife / 2) {
+            g2d.drawImage(heart_blank, x, y, null);
+            i++;
+            x += gamePanel.tileSize;
+        }
+
+        //reset position, value
+        x = gamePanel.tileSize / 2;
+        y = gamePanel.tileSize / 2;
+        i = 0;
+        //draw half, full heart
+        while (i < gamePanel.player.life) {
+            g2d.drawImage(heart_half, x, y, null);
+            i++;
+            if(i<gamePanel.player.life){
+                g2d.drawImage(heart_full, x, y, null);
+            }
+            i++;
+            x += gamePanel.tileSize;
+        }
+
     }
 
     private void titleScreen() {

@@ -3,10 +3,12 @@ package main;
 import entity.Entity;
 import entity.Player;
 import main.tile.TileManager;
-import object.SuperObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable {
     //screen setting
@@ -30,12 +32,14 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter assetSetter = new AssetSetter(this);
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public UI ui = new UI(this);
+    public EventHandler eventHandler = new EventHandler(this);
     //execute loop
     Thread gameThread;
     //entity and object
     public Player player = new Player(this, keyHandler);
-    public SuperObject target[] = new SuperObject[10]; //temp number (only 10 objects)
+    public Entity target[] = new Entity[10]; //temp number (only 10 objects)
     public Entity npc[] = new Entity[10];
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     //game state
     public int gameState;
@@ -123,24 +127,37 @@ public class GamePanel extends JPanel implements Runnable {
         }
         //other
         else {
-
             //tile
             tileManager.draw(g2d);
-            //object
-            for (int i = 0; i < target.length; i++) {
-                if (target[i] != null) {
-                    target[i].drawImage(g2d, this);
-                }
-            }
-            //player
-            player.draw(g2d);
-            //npcs
+            //add player and other entities (object, npc,...)
+            entityList.add(player);
             for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].draw(g2d);
+                if(npc[i] != null) {
+                    entityList.add(npc[i]);
                 }
             }
+            for (int i = 0; i < target.length; i++) {
+                if(target[i] != null) {
+                    entityList.add(target[i]);
+                }
+            }
+            //sort Y position
+            Collections.sort(entityList, new Comparator<Entity>() {
+                @Override
+                public int compare(Entity e1, Entity e2) {
+                    int result = Integer.compare(e1.worldY,e2.worldY);
+                    return result;
+                }
+            });
 
+            //draw entities according to the sorting method
+            for (int i = 0; i < entityList.size(); i++) {
+                entityList.get(i).draw(g2d);
+            }
+            // Empty entity list
+            for (int i = 0; i < entityList.size(); i++) {
+                entityList.remove(i);
+            }
             // UI
             ui.draw(g2d);
 

@@ -34,8 +34,13 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gamePanel.tileSize * 23;
         worldY = gamePanel.tileSize * 21;
-        speed = 4;
+
         direction = "up";
+
+        //player stats
+        maxLife = 8;
+        speed = 4;
+        life = maxLife;
     }
 
     public void getPlayerImage() {
@@ -66,7 +71,6 @@ public class Player extends Entity {
                 gamePanel.npc[index].speak();
             }
         }
-        gamePanel.keyHandler.interact = false;
     }
 
     public void update() {
@@ -95,6 +99,10 @@ public class Player extends Entity {
             // check npc collision
             int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
             npcCollide(npcIndex);
+
+            //check event collision
+            gamePanel.eventHandler.checkEvent();
+            gamePanel.keyHandler.interact = false;
 
             //if collided == false, player can move
             if (!collided) {

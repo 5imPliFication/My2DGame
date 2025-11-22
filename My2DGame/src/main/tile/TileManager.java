@@ -71,7 +71,6 @@ public class TileManager {
         setup(40, "wall", true);
         setup(41, "tree", true);
 
-
     }
 
     public void setup(int index, String imgPath, boolean collision) {
@@ -145,34 +144,5 @@ public class TileManager {
                 worldRow++;
             }
         }
-//        // Calculate world tile offset (camera center)
-//        int worldColOffset = (int)(gamePanel.player.worldX / gamePanel.tileSize);
-//        int worldRowOffset = (int)(gamePanel.player.worldY / gamePanel.tileSize);
-//
-//        // CLAMP: prevent array out of bounds
-//        worldColOffset = Math.max(0, Math.min(worldColOffset, gamePanel.maxWorldCol - gamePanel.maxScreenCol - 1));
-//        worldRowOffset = Math.max(0, Math.min(worldRowOffset, gamePanel.maxWorldRow - gamePanel.maxScreenRow - 1));
-//
-//        // DRAW ONLY SCREEN TILES +1 BUFFER (17x13 = 221 tiles max vs 2500!)
-//        int screenColCount = gamePanel.maxScreenCol + 1;
-//        int screenRowCount = gamePanel.maxScreenRow + 1;
-//
-//        for (int screenCol = 0; screenCol < screenColCount; screenCol++) {
-//            int worldCol = worldColOffset + screenCol;
-//            if (worldCol >= gamePanel.maxWorldCol) continue;
-//
-//            int screenX = screenCol * gamePanel.tileSize;
-//
-//            for (int screenRow = 0; screenRow < screenRowCount; screenRow++) {
-//                int worldRow = worldRowOffset + screenRow;
-//                if (worldRow >= gamePanel.maxWorldRow) continue;
-//
-//                int tileNum = mapTileNum[worldCol][worldRow];
-//                int screenY = screenRow * gamePanel.tileSize;
-//
-//                g2d.drawImage(tiles[tileNum].image, screenX, screenY,
-//                        gamePanel.tileSize, gamePanel.tileSize, null);
-//            }
-//        }
     }
 }

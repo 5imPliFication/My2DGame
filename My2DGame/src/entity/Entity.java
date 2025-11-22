@@ -15,7 +15,7 @@ public class Entity {
     //location
     public int worldX, worldY;
     //facing direction
-    public String direction;
+    public String direction = "down";
     // animation imgs
     public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
     // animation img order
@@ -23,12 +23,20 @@ public class Entity {
     // idk bruh
     public int spriteNum = 1;
     //  ini hit boxes
-    public Rectangle solidArea = new Rectangle(0, 0, 40, 40);
+    public Rectangle solidArea = new Rectangle(0, 0, 40, 32);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collided = false;
+    //actions
     public int actionCooldown = 0;
     String dialogues[] = new String[20];
     int dialogueIndex = 0;
+    //assets for objbects
+    public BufferedImage image1,image2,image3;
+    public String name;
+
+    //char stats
+    public int maxLife;
+    public int life;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;

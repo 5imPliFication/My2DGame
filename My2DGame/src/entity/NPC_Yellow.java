@@ -8,7 +8,7 @@ public class NPC_Yellow extends Entity {
         super(gamePanel);
         direction = "down";
         setDialogue();
-        speed = 2;
+        speed = 1;
         getNPCImage();
     }
 
