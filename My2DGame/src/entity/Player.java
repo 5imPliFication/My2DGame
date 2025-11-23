@@ -73,8 +73,9 @@ public class Player extends Entity {
         }
     }
 
+
     public void update() {
-        if (keyHandler.up || keyHandler.down || keyHandler.left || keyHandler.right) {
+        if (keyHandler.up || keyHandler.down || keyHandler.left || keyHandler.right || keyHandler.interact) {
             if (keyHandler.up) {
                 direction = "up";
             }
@@ -100,12 +101,15 @@ public class Player extends Entity {
             int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
             npcCollide(npcIndex);
 
+            //check monster collision
+            int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monster);
+            monsterCollide(monsterIndex);
+
             //check event collision
             gamePanel.eventHandler.checkEvent();
-            gamePanel.keyHandler.interact = false;
 
             //if collided == false, player can move
-            if (!collided) {
+            if (!collided && !keyHandler.interact) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -121,6 +125,7 @@ public class Player extends Entity {
                         break;
                 }
             }
+            gamePanel.keyHandler.interact = false;
             //render player sprite
             spriteCounter++;
             if (spriteCounter > 10) { //animation speed
@@ -139,6 +144,23 @@ public class Player extends Entity {
                 spriteNum = 2;
                 standCounter = 0;
             }
+        }
+        if (iFrame) {
+            iFrameCounter++;
+            if (iFrameCounter > 60) {
+                iFrame = false;
+                iFrameCounter = 0;
+            }
+        }
+    }
+
+    private void monsterCollide(int monsterIndex) {
+        if (monsterIndex != 999) {
+            if (!iFrame) {
+                life -= 1;
+                iFrame = true;
+            }
+
         }
     }
 
@@ -191,6 +213,12 @@ public class Player extends Entity {
                 }
                 break;
         }
+        if (iFrame) {
+            //set opacity to 50% if in iFrame
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        }
         g2d.drawImage(image, screenX, screenY, null);
+        //reset opacity to normal after iFrame
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
     }
 }

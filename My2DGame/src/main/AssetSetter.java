@@ -1,6 +1,7 @@
 package main;
 
 import entity.NPC_Yellow;
+import main.monster.Monster_GreenSlime;
 import object.ObjectBoots;
 import object.ObjectChest;
 import object.ObjectDoor;
@@ -14,13 +15,13 @@ public class AssetSetter {
     }
 
     public void setObject() {
-        gamePanel.target[0] = new ObjectDoor(gamePanel);
-        gamePanel.target[0].worldX = gamePanel.tileSize*21;
-        gamePanel.target[0].worldY = gamePanel.tileSize*22;
-
-        gamePanel.target[1] = new ObjectDoor(gamePanel);
-        gamePanel.target[1].worldX = gamePanel.tileSize*23;
-        gamePanel.target[1].worldY = gamePanel.tileSize*25;
+//        gamePanel.target[0] = new ObjectDoor(gamePanel);
+//        gamePanel.target[0].worldX = gamePanel.tileSize*21;
+//        gamePanel.target[0].worldY = gamePanel.tileSize*22;
+//
+//        gamePanel.target[1] = new ObjectDoor(gamePanel);
+//        gamePanel.target[1].worldX = gamePanel.tileSize*23;
+//        gamePanel.target[1].worldY = gamePanel.tileSize*25;
     }
 
     public void setNPC() {
@@ -35,5 +36,14 @@ public class AssetSetter {
         gamePanel.npc[2] = new NPC_Yellow(gamePanel);
         gamePanel.npc[2].worldX = gamePanel.tileSize * 12;
         gamePanel.npc[2].worldY = gamePanel.tileSize * 8;
+    }
+    public void setMonster() {
+        gamePanel.monster[0] = new Monster_GreenSlime(gamePanel);
+        gamePanel.monster[0].worldX = gamePanel.tileSize * 23;
+        gamePanel.monster[0].worldY = gamePanel.tileSize * 36;
+
+        gamePanel.monster[1] = new Monster_GreenSlime(gamePanel);
+        gamePanel.monster[1].worldX = gamePanel.tileSize * 24;
+        gamePanel.monster[1].worldY = gamePanel.tileSize * 37;
     }
 }

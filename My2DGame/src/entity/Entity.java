@@ -22,6 +22,9 @@ public class Entity {
     public int spriteCounter = 0;
     // idk bruh
     public int spriteNum = 1;
+    //iframe
+    public boolean iFrame = false;
+    public int iFrameCounter = 0;
     //  ini hit boxes
     public Rectangle solidArea = new Rectangle(0, 0, 40, 32);
     public int solidAreaDefaultX, solidAreaDefaultY;
@@ -31,12 +34,14 @@ public class Entity {
     String dialogues[] = new String[20];
     int dialogueIndex = 0;
     //assets for objbects
-    public BufferedImage image1,image2,image3;
+    public BufferedImage image1, image2, image3;
     public String name;
 
     //char stats
     public int maxLife;
     public int life;
+
+    public int entityType;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -71,7 +76,15 @@ public class Entity {
         collided = false;
         gamePanel.collisionChecker.checkTile(this);
         gamePanel.collisionChecker.checkObject(this, false);
-        gamePanel.collisionChecker.checkPlayer(this);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.monster);
+        boolean playerCollision = gamePanel.collisionChecker.checkPlayer(this);
+        if(this.entityType == 2 && playerCollision) {
+            if(!gamePanel.player.iFrame) {
+                gamePanel.player.life -= 1;
+                gamePanel.player.iFrame = true;
+            }
+        }
         if (!collided) {
             switch (direction) {
                 case "up":
