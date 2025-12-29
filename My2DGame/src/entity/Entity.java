@@ -17,7 +17,11 @@ public class Entity {
     //facing direction
     public String direction = "down";
     // animation imgs
-    public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
+    public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    //attack animation
+    public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
+    public boolean attacking = false;
+    public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     // animation img order
     public int spriteCounter = 0;
     // idk bruh
@@ -40,6 +44,10 @@ public class Entity {
     //char stats
     public int maxLife;
     public int life;
+    public boolean alive = true;
+    public boolean dying = false;
+
+    public int dyingCounter = 0;
 
     public int entityType;
 
@@ -71,6 +79,9 @@ public class Entity {
 
     public void setAction() {
     }
+    public void damagedReaction(){
+
+    }
 
     public void update() {
         collided = false;
@@ -79,8 +90,8 @@ public class Entity {
         gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
         gamePanel.collisionChecker.checkEntity(this, gamePanel.monster);
         boolean playerCollision = gamePanel.collisionChecker.checkPlayer(this);
-        if(this.entityType == 2 && playerCollision) {
-            if(!gamePanel.player.iFrame) {
+        if (this.entityType == 2 && playerCollision) {
+            if (!gamePanel.player.iFrame) {
                 gamePanel.player.life -= 1;
                 gamePanel.player.iFrame = true;
             }
@@ -107,21 +118,27 @@ public class Entity {
             if (spriteNum == 1) {
                 spriteNum = 2;
             } else if (spriteNum == 2) {
-                spriteNum = 3;
-            } else if (spriteNum == 3) {
                 spriteNum = 1;
             }
             spriteCounter = 0;
         }
         setAction();
+        // iframe setting
+        if (iFrame) {
+            iFrameCounter++;
+            if (iFrameCounter > 40) {
+                iFrame = false;
+                iFrameCounter = 0;
+            }
+        }
     }
 
-    public BufferedImage setup(String imgName) {
+    public BufferedImage setup(String imgName, int width, int height) {
         UtilityTool util = new UtilityTool();
         BufferedImage image = null;
         try {
             image = ImageIO.read(getClass().getResourceAsStream(imgName + ".png"));
-            image = util.scaledImage(image, gamePanel.tileSize, gamePanel.tileSize);
+            image = util.scaledImage(image, width, height);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -144,10 +161,6 @@ public class Entity {
                     if (spriteNum == 2) {
                         image = up2;
                     }
-                    if (spriteNum == 3) {
-                        image = up3;
-                    }
-
                     break;
                 case "down":
                     if (spriteNum == 1) {
@@ -155,9 +168,6 @@ public class Entity {
                     }
                     if (spriteNum == 2) {
                         image = down2;
-                    }
-                    if (spriteNum == 3) {
-                        image = down3;
                     }
                     break;
                 case "left":
@@ -167,9 +177,6 @@ public class Entity {
                     if (spriteNum == 2) {
                         image = left2;
                     }
-                    if (spriteNum == 3) {
-                        image = left3;
-                    }
                     break;
                 case "right":
                     if (spriteNum == 1) {
@@ -178,12 +185,67 @@ public class Entity {
                     if (spriteNum == 2) {
                         image = right2;
                     }
-                    if (spriteNum == 3) {
-                        image = right3;
-                    }
                     break;
             }
+
+            //monster/npc HP bar
+            if (entityType == 2) {
+                if (maxLife != life) {
+                    double oneScale = (double) gamePanel.tileSize/maxLife;
+                    double hpBarValue = oneScale*life;
+
+                    g2d.setColor(new Color(35,35,35));
+                    g2d.fillRect(screenX, screenY - 15, gamePanel.tileSize+4, 14);
+                    g2d.setColor(new Color(255, 69, 93));
+                    g2d.fillRect(screenX+2, screenY - 13, (int)hpBarValue, 10);
+                }
+            }
+            if (iFrame) {
+                //set opacity to 40% if in iFrame
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+            }
+            if (dying) {
+                dyingAnimation(g2d);
+            }
             g2d.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
+    }
+
+    public void changeAlpha(Graphics2D g2d, float alphaValue) {
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
+    }
+
+    private void dyingAnimation(Graphics2D g2d) {
+        dyingCounter++;
+        if (dyingCounter <= 5) {
+            changeAlpha(g2d, 0f);
+        }
+        if (dyingCounter > 5 && dyingCounter <= 10) {
+            changeAlpha(g2d, 1f);
+        }
+        if (dyingCounter > 10 && dyingCounter <= 15) {
+            changeAlpha(g2d, 0f);
+        }
+        if (dyingCounter > 15 && dyingCounter <= 20) {
+            changeAlpha(g2d, 1f);
+        }
+        if (dyingCounter > 20 && dyingCounter <= 25) {
+            changeAlpha(g2d, 0f);
+        }
+        if (dyingCounter > 25 && dyingCounter <= 30) {
+            changeAlpha(g2d, 1f);
+        }
+        if (dyingCounter > 30 && dyingCounter <= 35) {
+            changeAlpha(g2d, 0f);
+        }
+        if (dyingCounter > 35 && dyingCounter <= 40) {
+            changeAlpha(g2d, 1f);
+        }
+        if (dyingCounter > 40) {
+            dying = false;
+            alive = false;
+        }
+
     }
 }

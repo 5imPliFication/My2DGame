@@ -10,7 +10,7 @@ public class ObjectDoor extends Entity {
     public ObjectDoor(GamePanel gamePanel) {
         super(gamePanel);
         name="Door";
-        down1 = setup("/objects/door");
+        down1 = setup("/objects/door", gamePanel.tileSize, gamePanel.tileSize);
         collided = true;
 
         //setup render box for render order

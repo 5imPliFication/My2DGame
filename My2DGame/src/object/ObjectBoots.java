@@ -10,6 +10,6 @@ public class ObjectBoots extends Entity {
     public ObjectBoots(GamePanel gamePanel) {
         super(gamePanel);
         name = "Boots";
-        down1 = setup("/objects/boots");
+        down1 = setup("/objects/boots", gamePanel.tileSize, gamePanel.tileSize);
     }
 }

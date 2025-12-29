@@ -7,9 +7,8 @@ import java.awt.event.MouseEvent;
 public class KeyHandler implements KeyListener {
     GamePanel gamePanel;
 
-    public boolean up, down, left, right, interact;
+    public boolean up, down, left, right, interact = false;
     boolean enableDebug = false;
-    boolean isInteract = false;
 
     public KeyHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -87,9 +86,9 @@ public class KeyHandler implements KeyListener {
             }
         }
 
-
         //play state
-        if (gamePanel.gameState == gamePanel.playState) {
+        //interaction
+        else if (gamePanel.gameState == gamePanel.playState) {
             if (code == KeyEvent.VK_W) {
                 up = true;
             }
@@ -106,7 +105,7 @@ public class KeyHandler implements KeyListener {
                 gamePanel.gameState = gamePanel.pauseState;
                 gamePanel.stopMusic();
             }
-            if (code == KeyEvent.VK_F) {
+            if (code == KeyEvent.VK_F || code == KeyEvent.VK_ENTER) {
                 interact = true;
             }
 

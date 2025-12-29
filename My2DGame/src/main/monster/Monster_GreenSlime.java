@@ -7,8 +7,13 @@ import java.awt.*;
 import java.util.Random;
 
 public class Monster_GreenSlime extends Entity {
+
+    GamePanel gamePanel;
+
     public Monster_GreenSlime(GamePanel gamePanel) {
         super(gamePanel);
+        this.gamePanel = gamePanel;
+
         name = "Green Slime";
         entityType = 2;
         speed = 1;
@@ -25,25 +30,21 @@ public class Monster_GreenSlime extends Entity {
     }
 
     public void getImage() {
-        up1 = setup("/monster/greenslime_down_1");
-        up2 = setup("/monster/greenslime_down_2");
-        up3 = setup("/monster/greenslime_down_1");
-        down1 = setup("/monster/greenslime_down_1");
-        down2 = setup("/monster/greenslime_down_2");
-        down3 = setup("/monster/greenslime_down_1");
-        left1 = setup("/monster/greenslime_down_1");
-        left2 = setup("/monster/greenslime_down_2");
-        left3 = setup("/monster/greenslime_down_1");
-        right1 = setup("/monster/greenslime_down_1");
-        right2 = setup("/monster/greenslime_down_2");
-        right3 = setup("/monster/greenslime_down_1");
+        up1 = setup("/monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        up2 = setup("/monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        down1 = setup("/monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        down2 = setup("/monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        left1 = setup("/monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        left2 = setup("/monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
+        right1 = setup("/monster/greenslime_down_1", gamePanel.tileSize, gamePanel.tileSize);
+        right2 = setup("/monster/greenslime_down_2", gamePanel.tileSize, gamePanel.tileSize);
     }
 
     public void setAction() {
         actionCooldown++;
         if (actionCooldown == 120) {
             Random random = new Random();
-            int i = random.nextInt(100);  //pick random number from 1->99
+            int i = random.nextInt(101);  //pick random number from 1->100
             if (i <= 25) {
                 direction = "up";
             }
@@ -58,5 +59,10 @@ public class Monster_GreenSlime extends Entity {
             }
             actionCooldown = 0;
         }
+    }
+
+    public void damagedReaction(){
+        actionCooldown = 0;
+        direction = gamePanel.player.direction;
     }
 }

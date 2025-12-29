@@ -13,18 +13,14 @@ public class NPC_Yellow extends Entity {
     }
 
     public void getNPCImage() {
-        up1 = setup("/npcs/npc00/npc-up-0");
-        up2 = setup("/npcs/npc00/npc-up-1");
-        up3 = setup("/npcs/npc00/npc-up-2");
-        down1 = setup("/npcs/npc00/npc-down-0");
-        down2 = setup("/npcs/npc00/npc-down-1");
-        down3 = setup("/npcs/npc00/npc-down-2");
-        left1 = setup("/npcs/npc00/npc-left-0");
-        left2 = setup("/npcs/npc00/npc-left-1");
-        left3 = setup("/npcs/npc00/npc-left-2");
-        right1 = setup("/npcs/npc00/npc-right-0");
-        right2 = setup("/npcs/npc00/npc-right-1");
-        right3 = setup("/npcs/npc00/npc-right-2");
+        up1 = setup("/npcs/npc00/npc-up-0", gamePanel.tileSize, gamePanel.tileSize);
+        up2 = setup("/npcs/npc00/npc-up-1", gamePanel.tileSize, gamePanel.tileSize);
+        down1 = setup("/npcs/npc00/npc-down-0", gamePanel.tileSize, gamePanel.tileSize);
+        down2 = setup("/npcs/npc00/npc-down-1", gamePanel.tileSize, gamePanel.tileSize);
+        left1 = setup("/npcs/npc00/npc-left-0", gamePanel.tileSize, gamePanel.tileSize);
+        left2 = setup("/npcs/npc00/npc-left-1", gamePanel.tileSize, gamePanel.tileSize);
+        right1 = setup("/npcs/npc00/npc-right-0", gamePanel.tileSize, gamePanel.tileSize);
+        right2 = setup("/npcs/npc00/npc-right-1", gamePanel.tileSize, gamePanel.tileSize);
     }
 
     public void setDialogue() {
@@ -38,7 +34,7 @@ public class NPC_Yellow extends Entity {
         actionCooldown++;
         if (actionCooldown == 120) {
             Random random = new Random();
-            int i = random.nextInt(100);  //pick random number from 1->99
+            int i = random.nextInt(101);  //pick random number from 1->100
             if (i <= 25) {
                 direction = "up";
             }
