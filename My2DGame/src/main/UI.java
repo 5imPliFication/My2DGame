@@ -20,6 +20,8 @@ public class UI {
     public String currentDialogue = "";
     public int choice = 0;
     public int titleScreenState = 0; //state 0 = first screen
+    public int slotCol = 0;
+    public int slotRow = 0;
 
 
     public UI(GamePanel gamePanel) {
@@ -70,7 +72,59 @@ public class UI {
         //character state
         if (gamePanel.gameState == gamePanel.characterState) {
             characterScreen();
+            inventoryScreen();
         }
+    }
+
+    private void inventoryScreen() {
+        int frameX, frameY, frameWidth, frameHeight;
+        frameX = gamePanel.tileSize * 9;
+        frameY = gamePanel.tileSize;
+        frameWidth = gamePanel.tileSize * 6;
+        frameHeight = gamePanel.tileSize * 5;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        //item slots
+        final int slotXstart = frameX + 20;
+        final int slotYstart = frameY + 20;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+        //draw player's items
+        for (int i = 0; i < gamePanel.player.inventory.size(); i++) {
+            g2d.drawImage(gamePanel.player.inventory.get(i).down1, slotX, slotY, null);
+            slotX += gamePanel.tileSize;
+            if (i == 4 || i == 9 || i == 14) {
+                slotX = slotXstart;
+                slotY += gamePanel.tileSize;
+            }
+        }
+
+        //cursor
+        int cursorX = slotXstart + (gamePanel.tileSize * slotCol), cursorY = slotYstart + (gamePanel.tileSize * slotRow);
+        int cursorWidth = gamePanel.tileSize;
+        int cursorHeight = gamePanel.tileSize;
+        g2d.setColor(Color.white);
+        g2d.setStroke(new BasicStroke(3.5f));
+        g2d.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+        //item description
+        int dFrameX = frameX, dFrameY = frameY + frameHeight, dFrameWidth = frameWidth, dFrameHeight = gamePanel.tileSize * 3;
+        drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+        //draw des text
+        int textX = dFrameX + 15;
+        int textY = dFrameY + gamePanel.tileSize - 20;
+        g2d.setFont(g2d.getFont().deriveFont(10F));
+
+        int itemIndex = getItemIndex();
+        if (itemIndex < gamePanel.player.inventory.size()) {
+            for (String line : gamePanel.player.inventory.get(itemIndex).description.split("\n")) {
+                g2d.drawString(line, textX, textY);
+                textY += 20;
+            }
+        }
+    }
+
+    private int getItemIndex() {
+        return slotCol + (slotRow * 5);
     }
 
     private void drawMessage() {
@@ -256,7 +310,7 @@ public class UI {
         //draw sub window
         final int frameX = gamePanel.tileSize;
         final int frameY = gamePanel.tileSize;
-        final int frameWidth = gamePanel.tileSize * 10;
+        final int frameWidth = gamePanel.tileSize * 7;
         final int frameHeight = gamePanel.tileSize * 10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
@@ -281,7 +335,7 @@ public class UI {
         textY += lineHeight;
         g2d.drawString("Exp", textX, textY);
         textY += lineHeight;
-        g2d.drawString("Next Level Exp", textX, textY);
+        g2d.drawString("Next Level", textX, textY);
         textY += lineHeight;
         g2d.drawString("Coin", textX, textY);
         textY += lineHeight + 20;

@@ -135,6 +135,11 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_F5) {
             enableDebug = !enableDebug;
         }
+
+        if(code == KeyEvent.VK_P){ // load map immediately after change
+            System.out.println("Map reloaded!");
+            gamePanel.tileManager.loadMap(gamePanel.tileManager.mapPath);
+        }
     }
 
     public void pauseState(int code) {
@@ -147,6 +152,30 @@ public class KeyHandler implements KeyListener {
     public void characterState(int code) {
         if (code == KeyEvent.VK_E) {
             gamePanel.gameState = gamePanel.playState;
+        }
+        if(code == KeyEvent.VK_W){
+            if(gamePanel.ui.slotRow!=0) {
+                gamePanel.ui.slotRow--;
+                gamePanel.playSE(3); //move cursor
+            }
+        }
+        if(code == KeyEvent.VK_A){
+            if(gamePanel.ui.slotCol!=0) {
+                gamePanel.ui.slotCol--;
+                gamePanel.playSE(3);
+            }
+        }
+        if(code == KeyEvent.VK_S){
+            if(gamePanel.ui.slotRow!=3) {
+                gamePanel.ui.slotRow++;
+                gamePanel.playSE(3);
+            }
+        }
+        if(code == KeyEvent.VK_D){
+            if(gamePanel.ui.slotCol!=4) {
+                gamePanel.ui.slotCol++;
+                gamePanel.playSE(3);
+            }
         }
     }
 

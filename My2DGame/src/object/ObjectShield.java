@@ -10,5 +10,6 @@ public class ObjectShield extends Entity {
         name = "Wooden Shield";
         down1 = setup("/objects/wooden_shield", gamePanel.tileSize, gamePanel.tileSize);
         defenseValue = 1;
+        description = "["+name+"]\n"+"A rusty shield";
     }
 }

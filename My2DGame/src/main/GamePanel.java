@@ -194,8 +194,21 @@ public class GamePanel extends JPanel implements Runnable {
                 long drawEndTime = System.nanoTime();
                 long passedTime = drawEndTime - drawStartTime;
                 g2d.setColor(Color.WHITE);
-                g2d.setFont(new Font("Arial", Font.PLAIN, 20));
-                g2d.drawString("Draw Time: " + passedTime + "ns", 10, 520);
+                g2d.setFont(new Font("Arial", Font.PLAIN, 15));
+                int x = 10;
+                int y = 450;
+                int lineHeight = 15;
+                g2d.drawString("Draw Time: " + passedTime + "ns", x, y);
+                y+=lineHeight;
+                g2d.drawString(String.valueOf(FPS), x, y);
+                y+=lineHeight;
+                g2d.drawString("World X: "+player.worldX, x, y);
+                y+=lineHeight;
+                g2d.drawString("World Y: "+player.worldY, x, y);
+                y+=lineHeight;
+                g2d.drawString("Col: "+(player.worldX+player.solidArea.x)/tileSize, x, y);
+                y+=lineHeight;
+                g2d.drawString("Row: "+(player.worldY+player.solidArea.y)/tileSize, x, y);
             }
         }
 

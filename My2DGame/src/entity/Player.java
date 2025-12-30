@@ -3,6 +3,7 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
+import object.ObjectKey;
 import object.ObjectShield;
 import object.ObjectSwordNormal;
 
@@ -10,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Player extends Entity {
     KeyHandler keyHandler;
@@ -17,6 +19,8 @@ public class Player extends Entity {
     public final int screenY;
     private int standCounter = 0;
     public boolean attackCancel = false;
+    public ArrayList<Entity> inventory = new ArrayList<>();
+    public final int inventorySize = 20;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         super(gamePanel);
@@ -36,6 +40,7 @@ public class Player extends Entity {
         solidAreaDefaultY = solidArea.y;
         setDefaultValues();
         getPlayerImage();
+        setItems();
     }
 
     public void setDefaultValues() {
@@ -59,6 +64,13 @@ public class Player extends Entity {
 
         attack = getAttack();
         defense = getDefense();
+    }
+
+    public void setItems(){
+        inventory.add(currentWeapon);
+        inventory.add(currentShield);
+        inventory.add(new ObjectKey(gamePanel));
+
     }
 
     public int getAttack() {

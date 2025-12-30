@@ -15,13 +15,14 @@ public class TileManager {
     GamePanel gamePanel;
     public Tile[] tiles;
     public int mapTileNum[][];
+    public String mapPath = "/maps/worldV2.txt";
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         tiles = new Tile[50];
         mapTileNum = new int[gamePanel.maxWorldCol][gamePanel.maxWorldRow];
         getTileImage();
-        loadMap("/maps/worldV2.txt");
+        loadMap(mapPath);
     }
 
     public void getTileImage() {

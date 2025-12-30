@@ -53,10 +53,9 @@ public class Entity {
 
     //items
     public int attackValue, defenseValue;
-
     public int dyingCounter = 0;
-
     public int entityType;
+    public String description = "-No description-";
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
