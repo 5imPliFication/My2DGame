@@ -19,6 +19,9 @@ public class Monster_GreenSlime extends Entity {
         speed = 1;
         maxLife = 4;
         life = maxLife;
+        attack = 3;
+        defense = 0;
+        exp = 2;
 
         solidArea.x = 3;
         solidArea.y = 18;

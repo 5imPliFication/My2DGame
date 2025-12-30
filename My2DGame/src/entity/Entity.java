@@ -44,8 +44,15 @@ public class Entity {
     //char stats
     public int maxLife;
     public int life;
+    public int level,exp,nextLevelExp;
+    public int strength,dexterity,attack,defense;
+    public int coin;
+    public Entity currentWeapon,currentShield;
     public boolean alive = true;
     public boolean dying = false;
+
+    //items
+    public int attackValue, defenseValue;
 
     public int dyingCounter = 0;
 
@@ -90,9 +97,15 @@ public class Entity {
         gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
         gamePanel.collisionChecker.checkEntity(this, gamePanel.monster);
         boolean playerCollision = gamePanel.collisionChecker.checkPlayer(this);
+        //monster attacks player
         if (this.entityType == 2 && playerCollision) {
             if (!gamePanel.player.iFrame) {
-                gamePanel.player.life -= 1;
+                gamePanel.playSE(6); //monster attacks
+                int dmg = attack - gamePanel.player.defense;
+                if (dmg <= 0) {
+                    dmg = 0;
+                }
+                gamePanel.player.life -= dmg;
                 gamePanel.player.iFrame = true;
             }
         }

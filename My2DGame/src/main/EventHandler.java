@@ -49,7 +49,6 @@ public class EventHandler {
                 teleportTile(19, 16, gamePanel.dialogueState);
             }
         }
-
     }
 
     private void teleportTile(int col, int row, int gameState) {
@@ -70,6 +69,7 @@ public class EventHandler {
 
     private void healingPool(int col, int row, int gameState) {
         if (gamePanel.keyHandler.interact) {
+            gamePanel.player.attackCancel = true;
             gamePanel.gameState = gameState;
             gamePanel.ui.currentDialogue = "You drank the water.\nYour life is restored";
             gamePanel.player.life = gamePanel.player.maxLife;

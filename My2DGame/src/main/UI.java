@@ -7,15 +7,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class UI {
     GamePanel gamePanel;
     Font quinqueFive;
     BufferedImage heart_full, heart_half, heart_blank;
     Graphics2D g2d;
-    private int messageCounter = 0;
-    public boolean messageOn = false;
-    public String message = "";
+    ArrayList<String> message = new ArrayList<>();
+    ArrayList<Integer> messageCounter = new ArrayList<>();
     public boolean gameFinished = false;
     public String currentDialogue = "";
     public int choice = 0;
@@ -39,9 +39,9 @@ public class UI {
         heart_blank = heart.image3;
     }
 
-    public void ShowMessage(String text) {
-        message = text;
-        messageOn = true;
+    public void addMessage(String text) {
+        message.add(text);
+        messageCounter.add(0);
     }
 
     public void draw(Graphics2D g2d) {
@@ -56,6 +56,7 @@ public class UI {
         //play state
         if (gamePanel.gameState == gamePanel.playState) {
             playerLife();
+            drawMessage();
         }
         //pause state
         if (gamePanel.gameState == gamePanel.pauseState) {
@@ -65,6 +66,29 @@ public class UI {
         //dialogue state
         if (gamePanel.gameState == gamePanel.dialogueState) {
             dialogueScreen();
+        }
+        //character state
+        if (gamePanel.gameState == gamePanel.characterState) {
+            characterScreen();
+        }
+    }
+
+    private void drawMessage() {
+        int messageX = gamePanel.tileSize, messageY = gamePanel.tileSize * 4; //msg position
+        g2d.setFont(g2d.getFont().deriveFont(12F));
+        for (int i = 0; i < messageCounter.size(); i++) {
+            if (message.get(i) != null) {
+                g2d.setColor(Color.white);
+                g2d.drawString(message.get(i), messageX, messageY);
+
+                int counter = messageCounter.get(i) + 1;
+                messageCounter.set(i, counter);
+                messageY += 50;
+                if (messageCounter.get(i) > 180) {
+                    message.remove(i);
+                    messageCounter.remove(i);
+                }
+            }
         }
     }
 
@@ -87,7 +111,7 @@ public class UI {
         while (i < gamePanel.player.life) {
             g2d.drawImage(heart_half, x, y, null);
             i++;
-            if(i<gamePanel.player.life){
+            if (i < gamePanel.player.life) {
                 g2d.drawImage(heart_full, x, y, null);
             }
             i++;
@@ -226,5 +250,103 @@ public class UI {
         x = getXaxisCenteredText(text);
         y = gamePanel.screenHeight / 2;
         g2d.drawString(text, x, y);
+    }
+
+    public void characterScreen() {
+        //draw sub window
+        final int frameX = gamePanel.tileSize;
+        final int frameY = gamePanel.tileSize;
+        final int frameWidth = gamePanel.tileSize * 10;
+        final int frameHeight = gamePanel.tileSize * 10;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        g2d.setColor(Color.white);
+        g2d.setFont(g2d.getFont().deriveFont(15F));
+
+        int textX = frameX + 20;
+        int textY = frameY + gamePanel.tileSize;
+        final int lineHeight = 32;
+        //names
+        g2d.drawString("Level", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Life", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Strength", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Dexterity", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Attack", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Defense", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Exp", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Next Level Exp", textX, textY);
+        textY += lineHeight;
+        g2d.drawString("Coin", textX, textY);
+        textY += lineHeight + 20;
+        g2d.drawString("Weapon", textX, textY);
+        textY += lineHeight + 15;
+        g2d.drawString("Shield", textX, textY);
+
+        int tailX = (frameX + frameWidth) - 30;
+        //reset textY
+        textY = frameY + gamePanel.tileSize;
+        //draw values
+        String value;
+        value = String.valueOf(gamePanel.player.level);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = gamePanel.player.life + "/" + gamePanel.player.maxLife;
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.strength);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.dexterity);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.attack);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.defense);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.exp);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.nextLevelExp);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        value = String.valueOf(gamePanel.player.coin);
+        textX = getXaxisAllignToRightText(value, tailX);
+        g2d.drawString(value, textX, textY);
+        textY += lineHeight;
+
+        g2d.drawImage(gamePanel.player.currentWeapon.down1, tailX - gamePanel.tileSize, textY - 14, null);
+        textY += lineHeight + 15;
+        g2d.drawImage(gamePanel.player.currentShield.down1, tailX - gamePanel.tileSize, textY - 14, null);
+
+    }
+
+    public int getXaxisAllignToRightText(String text, int tailX) {
+        int textLength = (int) g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+        return tailX - textLength;
     }
 }

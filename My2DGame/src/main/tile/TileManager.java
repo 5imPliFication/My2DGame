@@ -114,29 +114,65 @@ public class TileManager {
     }
 
     public void draw(Graphics2D g2d) {
+//        // not culling, wasting cpu resources
+//        int worldCol = 0;
+//        int worldRow = 0;
+//        while (worldCol < gamePanel.maxWorldCol && worldRow < gamePanel.maxWorldRow) {
+//            int tileNum = mapTileNum[worldCol][worldRow];
+//
+//            int worldX = worldCol * gamePanel.tileSize;
+//            int worldY = worldRow * gamePanel.tileSize;
+//            int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
+//            int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
+//            if (screenX + gamePanel.tileSize > -gamePanel.tileSize &&      // allow 1 tile off left
+//                    screenX < gamePanel.screenWidth &&    // allow 1 tile off right ← THIS FIXES IT
+//                    screenY + gamePanel.tileSize > -gamePanel.tileSize &&
+//                    screenY < gamePanel.screenHeight) {
+//                g2d.drawImage(tiles[tileNum].image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+//            } // this is screen oriented, utilizing culling method
+//
+//            worldCol++;
+//            if (worldCol == gamePanel.maxWorldCol) {
+//                worldCol = 0;
+//                worldRow++;
+//            }
+//        }
+        // Get stable camera position
+        float camX = gamePanel.player.worldX;
+        float camY = gamePanel.player.worldY;
+        int pScreenX = gamePanel.player.screenX;
+        int pScreenY = gamePanel.player.screenY;
 
-        // not culling, wasting cpu resources
         int worldCol = 0;
         int worldRow = 0;
+
         while (worldCol < gamePanel.maxWorldCol && worldRow < gamePanel.maxWorldRow) {
             int tileNum = mapTileNum[worldCol][worldRow];
 
             int worldX = worldCol * gamePanel.tileSize;
             int worldY = worldRow * gamePanel.tileSize;
-            int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
-            int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
-//            if (worldX + gamePanel.tileSize > gamePanel.player.worldX - gamePanel.player.screenX &&
-//                    worldX - gamePanel.tileSize < gamePanel.player.worldX + gamePanel.player.screenX &&
-//                    worldY + gamePanel.tileSize > gamePanel.player.worldY - gamePanel.player.screenY &&
-//                    worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY) {
-//                g2d.drawImage(tiles[tileNum].image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
-//            } //this is player oriented, resource hogging
-            if (screenX + gamePanel.tileSize > -gamePanel.tileSize &&      // allow 1 tile off left
-                    screenX < gamePanel.screenWidth + gamePanel.tileSize &&    // allow 1 tile off right ← THIS FIXES IT
+
+            // Use float math for smooth movement, cast to int only at the end
+            float screenXf = worldX - camX + pScreenX;
+            float screenYf = worldY - camY + pScreenY;
+
+            int screenX = (int) screenXf;
+            int screenY = (int) screenYf;
+
+            // Allow 1 extra tile on all sides for smooth edges
+            if (screenX + gamePanel.tileSize > -gamePanel.tileSize &&
+                    screenX < gamePanel.screenWidth + gamePanel.tileSize &&
                     screenY + gamePanel.tileSize > -gamePanel.tileSize &&
-                    screenY < gamePanel.screenHeight + gamePanel.tileSize) {
-                g2d.drawImage(tiles[tileNum].image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
-            } // this is screen oriented, utilizing culling method
+                    screenY < gamePanel.screenHeight) {
+
+                // Draw with anti-aliased edges
+                g2d.drawImage(tiles[tileNum].image,
+                        screenX,
+                        screenY,
+                        gamePanel.tileSize,
+                        gamePanel.tileSize,
+                        null);
+            }
 
             worldCol++;
             if (worldCol == gamePanel.maxWorldCol) {

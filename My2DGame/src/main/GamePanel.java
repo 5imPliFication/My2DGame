@@ -48,6 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playState = 1;
     public final int pauseState = 2;
     public final int dialogueState = 3;
+    public final int characterState = 4;
 
     //game window
     public GamePanel() {
@@ -113,7 +114,12 @@ public class GamePanel extends JPanel implements Runnable {
                 if (monster[i] != null) {
                     if (monster[i].alive && !monster[i].dying) {
                         monster[i].update();
-                    } if(!monster[i].alive) {
+                    }
+                    if (monster[i].dying) { //remove monster attacks and hitbox
+                        monster[i].attackValue = 0;
+                        monster[i].solidArea = new Rectangle(0, 0, 0, 0);
+                    }
+                    if (!monster[i].alive) {
                         monster[i] = null;
                     }
                 }
@@ -134,6 +140,12 @@ public class GamePanel extends JPanel implements Runnable {
         //debug mode
         long drawStartTime = 0;
         drawStartTime = System.nanoTime();
+
+        //anti aliasing
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         //title screen
         if (gameState == titleState) {

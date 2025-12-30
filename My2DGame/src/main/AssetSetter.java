@@ -45,5 +45,17 @@ public class AssetSetter {
         gamePanel.monster[1] = new Monster_GreenSlime(gamePanel);
         gamePanel.monster[1].worldX = gamePanel.tileSize * 24;
         gamePanel.monster[1].worldY = gamePanel.tileSize * 37;
+
+        gamePanel.monster[2] = new Monster_GreenSlime(gamePanel);
+        gamePanel.monster[2].worldX = gamePanel.tileSize * 25;
+        gamePanel.monster[2].worldY = gamePanel.tileSize * 37;
+
+        gamePanel.monster[3] = new Monster_GreenSlime(gamePanel);
+        gamePanel.monster[3].worldX = gamePanel.tileSize * 26;
+        gamePanel.monster[3].worldY = gamePanel.tileSize * 37;
+
+        gamePanel.monster[4] = new Monster_GreenSlime(gamePanel);
+        gamePanel.monster[4].worldX = gamePanel.tileSize * 22;
+        gamePanel.monster[4].worldY = gamePanel.tileSize * 37;
     }
 }

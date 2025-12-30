@@ -3,6 +3,8 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
+import object.ObjectShield;
+import object.ObjectSwordNormal;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,6 +16,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
     private int standCounter = 0;
+    public boolean attackCancel = false;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         super(gamePanel);
@@ -38,13 +41,32 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gamePanel.tileSize * 23;
         worldY = gamePanel.tileSize * 21;
-
         direction = "up";
 
         //player stats
+        level = 1;
+        strength = 1;
+        dexterity = 1;
+        exp = 0;
+        nextLevelExp = 5;
         maxLife = 8;
         speed = 4;
         life = maxLife;
+
+        coin = 0;
+        currentWeapon = new ObjectSwordNormal(gamePanel);
+        currentShield = new ObjectShield(gamePanel);
+
+        attack = getAttack();
+        defense = getDefense();
+    }
+
+    public int getAttack() {
+        return strength + currentWeapon.attackValue;
+    }
+
+    public int getDefense() {
+        return dexterity + currentShield.defenseValue;
     }
 
     public void getPlayerImage() {
@@ -78,6 +100,7 @@ public class Player extends Entity {
     public void npcCollide(int index) {
         if (gamePanel.keyHandler.interact) {
             if (index != 999) {
+                attackCancel = true;
                 gamePanel.gameState = gamePanel.dialogueState;
                 gamePanel.npc[index].speak();
             } else {
@@ -87,17 +110,57 @@ public class Player extends Entity {
         }
     }
 
+    public void monsterCollide(int i) {
+        if (i != 999) {
+            if (!iFrame) {
+                gamePanel.playSE(6); //receive damage
+
+                int dmg = gamePanel.monster[i].attack - defense;
+                if (dmg <= 0) {
+                    dmg = 0;
+                }
+                life -= dmg;
+                iFrame = true;
+            }
+        }
+    }
+
     public void damageMonster(int i) {
         if (i != 999) {
             if (!gamePanel.monster[i].iFrame) {
-                gamePanel.monster[i].life -= 1;
                 gamePanel.playSE(5); //hit monster
+                int dmg = attack - gamePanel.monster[i].defense;
+                if (dmg <= 0) {
+                    dmg = 0;
+                }
+                gamePanel.monster[i].life -= dmg;
+                gamePanel.ui.addMessage(dmg + " damage!");
                 gamePanel.monster[i].iFrame = true;
                 gamePanel.monster[i].damagedReaction();
                 if (gamePanel.monster[i].life <= 0) {
+                    gamePanel.ui.addMessage(gamePanel.monster[i].name + " slayed!");
                     gamePanel.monster[i].dying = true;
+                    gamePanel.ui.addMessage("+" + gamePanel.monster[i].exp + " EXP!");
+                    exp += gamePanel.monster[i].exp;
+                    checkLevelUp();
                 }
             }
+        }
+    }
+
+    private void checkLevelUp() {
+        if (exp >= nextLevelExp) {
+            level++;
+            nextLevelExp += (nextLevelExp / 2 + nextLevelExp);
+            maxLife += 2;
+            strength++;
+            dexterity++;
+            attack = getAttack();
+            defense = getDefense();
+
+            gamePanel.playSE(7); //level up SE
+            gamePanel.gameState = gamePanel.dialogueState;
+            gamePanel.ui.currentDialogue = "Level up!\n" + "You are now level " + level;
         }
     }
 
@@ -153,17 +216,31 @@ public class Player extends Entity {
         if (attacking) {
             attack();
         } else if (keyHandler.up || keyHandler.down || keyHandler.left || keyHandler.right || keyHandler.interact) {
+            int moveX = 0;
+            int moveY = 0;
+            String newDirection = direction;
+
             if (keyHandler.up) {
-                direction = "up";
+                moveY -= speed;
+                newDirection = "up";
             }
             if (keyHandler.down) {
-                direction = "down";
+                moveY += speed;
+                newDirection = "down";
             }
             if (keyHandler.left) {
-                direction = "left";
+                moveX -= speed;
+                newDirection = "left";
             }
             if (keyHandler.right) {
-                direction = "right";
+                moveX += speed;
+                newDirection = "right";
+            }
+            if (keyHandler.left || keyHandler.right) {
+                if (keyHandler.left) direction = "left";
+                if (keyHandler.right) direction = "right";
+            } else if (keyHandler.up || keyHandler.down) {
+                direction = newDirection;
             }
 
             //check tile collision
@@ -187,21 +264,22 @@ public class Player extends Entity {
 
             //if collided == false, player can move
             if (!collided && !keyHandler.interact) {
-                switch (direction) {
-                    case "up":
-                        worldY -= speed;
-                        break;
-                    case "down":
-                        worldY += speed;
-                        break;
-                    case "left":
-                        worldX -= speed;
-                        break;
-                    case "right":
-                        worldX += speed;
-                        break;
+                //move diagonally
+                if (moveX != 0) {
+                    worldX += moveX;
+                }
+                if (moveY != 0) {
+                    worldY += moveY;
                 }
             }
+
+            if (keyHandler.interact && !attackCancel) {
+                gamePanel.playSE(7);//attack sound
+                attacking = true;
+                spriteCounter = 0;
+            }
+            attackCancel = false;
+
             gamePanel.keyHandler.interact = false;
             //render player sprite
             spriteCounter++;
@@ -219,22 +297,12 @@ public class Player extends Entity {
                     standCounter = 0;
                 }
             }
-            if (iFrame) {
-                iFrameCounter++;
-                if (iFrameCounter > 60) {
-                    iFrame = false;
-                    iFrameCounter = 0;
-                }
-            }
         }
-    }
-
-    public void monsterCollide(int i) {
-        if (i != 999) {
-            if (!iFrame) {
-                gamePanel.playSE(6); //receive damage
-                life -= 1;
-                iFrame = true;
+        if (iFrame) {
+            iFrameCounter++;
+            if (iFrameCounter > 60) {
+                iFrame = false;
+                iFrameCounter = 0;
             }
         }
     }
